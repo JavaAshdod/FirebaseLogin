@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -27,11 +28,21 @@ public class LoginActivity extends AppCompatActivity {
 
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
-        findViewById(R.id.imageView).setOnClickListener(new View.OnClickListener() {
+        hideKeyboardWhenNeeded();
+    }
+
+    /**
+     * Hides the keyboard when layout is touched.
+     */
+    private void hideKeyboardWhenNeeded() {
+        findViewById(R.id.layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                im.hideSoftInputFromInputMethod(etPassword.getWindowToken(), 0);
+                View v = getCurrentFocus();
+                if (v!=null) {
+                    InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    im.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
             }
         });
     }
@@ -49,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                showSnackBar(e ,view);
+                showSnackBar(e, view);
             }
         });
     }
@@ -65,12 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void hideProgress(){
+    private void hideProgress() {
         dialog.dismiss();
     }
-    
-
-
 
 
     private void showSnackBar(Exception e, View view) {
@@ -78,15 +86,20 @@ public class LoginActivity extends AppCompatActivity {
         Snackbar.make(view, e.getLocalizedMessage(),
                 Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
             @Override
-            public void onClick(View view) {}
+            public void onClick(View view) {
+            }
         }).show();
     }
 
+    /**
+     * Start an intent without adding the activity to the stack
+     */
     private void gotoMain() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
     public void signUp(final View view) {
         showProgressDialog();
         FirebaseAuth.
@@ -95,17 +108,16 @@ public class LoginActivity extends AppCompatActivity {
                 addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                       gotoMain();
+                        gotoMain();
                     }
                 }).
                 addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                       showSnackBar(e, view);
+                        showSnackBar(e, view);
                     }
                 });
     }
-
 
 
     public String getEmail() {
