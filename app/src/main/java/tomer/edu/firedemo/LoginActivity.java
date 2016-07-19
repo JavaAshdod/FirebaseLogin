@@ -1,5 +1,6 @@
 package tomer.edu.firedemo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPassword;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(final View view) {
+
+        showProgressDialog();
         FirebaseAuth.getInstance().
                 signInWithEmailAndPassword(getEmail(), getPassword()).
                 addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -50,7 +54,27 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private ProgressDialog dialog;
+
+    private void showProgressDialog() {
+        if (dialog == null) {
+            dialog = new ProgressDialog(this);
+            dialog.setTitle("Logging you in...");
+            dialog.setMessage("Connecting to server");
+        }
+        dialog.show();
+    }
+
+    private void hideProgress(){
+        dialog.dismiss();
+    }
+    
+
+
+
+
     private void showSnackBar(Exception e, View view) {
+        hideProgress();
         Snackbar.make(view, e.getLocalizedMessage(),
                 Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
             @Override
@@ -64,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void signUp(final View view) {
+        showProgressDialog();
         FirebaseAuth.
                 getInstance().
                 createUserWithEmailAndPassword(getEmail(), getPassword()).
