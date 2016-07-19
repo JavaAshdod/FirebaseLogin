@@ -38,17 +38,21 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View v = getCurrentFocus();
-                if (v!=null) {
-                    InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    im.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
+                hideKeyboard();
             }
         });
     }
+    private void hideKeyboard(){
+        View v = getCurrentFocus();
+        if (v == null)
+            v = new View(LoginActivity.this);
+        InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        im.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+    }
 
     public void login(final View view) {
-
+        hideKeyboard();
         showProgressDialog();
         FirebaseAuth.getInstance().
                 signInWithEmailAndPassword(getEmail(), getPassword()).
@@ -101,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signUp(final View view) {
+        hideKeyboard();
         showProgressDialog();
         FirebaseAuth.
                 getInstance().

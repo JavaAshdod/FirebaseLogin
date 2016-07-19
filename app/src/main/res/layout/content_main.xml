@@ -12,8 +12,10 @@
     tools:context="tomer.edu.firedemo.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:src="@mipmap/ic_launcher"
+        android:onClick="addMessage"
+          />
 </RelativeLayout>
